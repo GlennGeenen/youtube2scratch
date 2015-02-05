@@ -4,13 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using YoutubeExtractor;
-using System.Drawing;
-
-using AForge.Video.FFMPEG;
-using System.Drawing.Imaging;
-using System.Security.Cryptography;
-using System.IO;
-using System.Text;
 
 namespace youtube2scratch
 {
@@ -29,12 +22,8 @@ namespace youtube2scratch
         private readonly BackgroundWorker m_audioWorker = new BackgroundWorker();
         private readonly BackgroundWorker m_downloadWorker = new BackgroundWorker();
 
-        private Dictionary<int, string> m_dictionary = null;
-
         public YoutubeLink()
         {
-            m_dictionary = new Dictionary<int, string>();
-
             m_infoWorker.DoWork += m_infoWorker_DoWork;
             m_audioWorker.DoWork += m_audioWorker_DoWork;
             m_downloadWorker.DoWork += m_downloadWorker_DoWork;
@@ -140,56 +129,10 @@ namespace youtube2scratch
 
         private void m_downloadWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            /*
-             * Select the first .mp4 video with 360p resolution
-             */
-            VideoInfo video = m_videoInfos
-                .First(info => info.VideoType == VideoType.Mp4 && info.Resolution == 480);
-
-            /*
-             * If the video has a decrypted signature, decipher it
-             */
-            if (video.RequiresDecryption)
-            {
-                DownloadUrlResolver.DecryptDownloadUrl(video);
-            }
-
-            m_filename = System.IO.Path.Combine("C:/temp", video.Title);
-
-            var videoDownloader = new VideoDownloader(video, m_filename + video.VideoExtension);
-
-            videoDownloader.DownloadProgressChanged += (s, args) => this.progress = args.ProgressPercentage;
-
-            videoDownloader.Execute();
-
-            cutvideo(video.VideoExtension);
-        }
-
-        private void cutvideo(string extension)
-        {
             try
             {
-                VideoFileReader reader = new VideoFileReader();
-                reader.Open(m_filename + extension);
-                Bitmap videoFrame = null;
-                int frame = 0;
-                int scratchfile = 0;
-                while((videoFrame = reader.ReadVideoFrame()) != null)
-                {
-                    if( frame % reader.FrameRate == 0)
-                    {
-                        Console.WriteLine("Frame: " + frame);
-
-                        byte[] buffer = imageToByteArray(videoFrame);
-                        m_dictionary.Add(scratchfile, getMd5Hash(buffer));
-                        videoFrame.Save("C:/temp/" + scratchfile.ToString() + ".png", ImageFormat.Png);
-                        videoFrame.Dispose();
-                        videoFrame = null;
-                        ++scratchfile;
-                    }
-                    ++frame;
-                }
-                reader.Close();
+                ImageExporter exporter = new ImageExporter();
+                exporter.export(m_videoInfos);
             }
             catch (Exception ex)
             {
@@ -197,65 +140,12 @@ namespace youtube2scratch
             }
         }
 
-        private static byte[] imageToByteArray(Image image)
-        {
-            MemoryStream ms = new MemoryStream();
-            image.Save(ms, ImageFormat.Png);
-            return ms.ToArray();
-        }
-
-        private static string getMd5Hash(byte[] buffer)
-        {
-            MD5 md5Hasher = MD5.Create();
-
-            byte[] data = md5Hasher.ComputeHash(buffer);
-
-            StringBuilder sBuilder = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
-            return sBuilder.ToString();
-        }
-
         void m_audioWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
-                /*
-                 * We want the first extractable video with the highest audio quality.
-                 */
-                VideoInfo video = m_videoInfos
-                    .Where(info => info.CanExtractAudio)
-                    .OrderByDescending(info => info.AudioBitrate)
-                    .First();
-
-                /*
-                 * If the video has a decrypted signature, decipher it
-                 */
-                if (video.RequiresDecryption)
-                {
-                    DownloadUrlResolver.DecryptDownloadUrl(video);
-                }
-                /*
-                 * Create the audio downloader.
-                 * The first argument is the video where the audio should be extracted from.
-                 * The second argument is the path to save the audio file.
-                 */
-                var audioDownloader = new AudioDownloader(video, System.IO.Path.Combine("C:/temp", video.Title + video.AudioExtension));
-
-                // Register the progress events. We treat the download progress as 85% of the progress and the extraction progress only as 15% of the progress,
-                // because the download will take much longer than the audio extraction.
-            
-            
-                // audioDownloader.DownloadProgressChanged += (s, args) => Console.WriteLine(args.ProgressPercentage * 0.85);
-                // audioDownloader.AudioExtractionProgressChanged += (s, args) => Console.WriteLine(85 + args.ProgressPercentage * 0.15);
-
-                /*
-                 * Execute the audio downloader.
-                 * For GUI applications note, that this method runs synchronously.
-                 */
-                audioDownloader.Execute();
+                WAVexporter exporter = new WAVexporter();
+                exporter.export(m_videoInfos);
             }
             catch (Exception ex)
             {
@@ -268,7 +158,7 @@ namespace youtube2scratch
             if(m_videoInfos != null)
             {
                 m_downloadWorker.RunWorkerAsync();
-                // m_audioWorker.RunWorkerAsync();
+                m_audioWorker.RunWorkerAsync();
             }
             else
             {
