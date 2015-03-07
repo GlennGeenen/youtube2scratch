@@ -1,0 +1,79 @@
+{
+	"objName": "Stage",
+	"sounds": [{
+			"soundName": "plop",
+			"soundID": 1,
+			"md5": "83a9787d4cb6f3b7632b4ddfebf74367.wav",
+			"sampleCount": 258,
+			"rate": 11025,
+			"format": ""
+		}],
+	"costumes": [{
+			"costumeName": "achtergrond",
+			"baseLayerID": 0,
+			"baseLayerMD5": "5c81a336fab8be57adc039a8a2b33ca9.png",
+			"bitmapResolution": 1,
+			"rotationCenterX": 240,
+			"rotationCenterY": 180
+		}],
+	"currentCostumeIndex": 0,
+	"penLayerMD5": "5c81a336fab8be57adc039a8a2b33ca9.png",
+	"penLayerID": 0,
+	"tempoBPM": 60,
+	"videoAlpha": 0.5,
+	"children": [{
+			"objName": "youtube2scratch",
+			"scripts": [[36, 47, [["whenGreenFlag"], ["doForever", [["wait:elapsed:from:", 1], ["nextCostume"]]]]],
+				[36, 196, [["whenGreenFlag"], ["playSound:", "YoutubeSound"]]]],
+			"sounds": [{
+					"soundName": "YoutubeSound",
+					"soundID": 0,
+					"md5": "b817b77422562c24558e70e0d45d4be6.wav",
+					"sampleCount": 6899327,
+					"rate": 22050,
+					"format": "adpcm"
+				}],
+			"costumes": [{
+					"costumeName": "youtube2Scratch1",
+					"baseLayerID": 1,
+					"baseLayerMD5": "347af56d154462a972d43d6c4d11782a.png",
+					"bitmapResolution": 2,
+					"rotationCenterX": 478,
+					"rotationCenterY": 268
+				},
+				{
+					"costumeName": "youtube2Scratch2",
+					"baseLayerID": 2,
+					"baseLayerMD5": "9e91949f6655b002261e27534ebb3ae4.png",
+					"bitmapResolution": 2,
+					"rotationCenterX": 478,
+					"rotationCenterY": 268
+				},
+				{
+					"costumeName": "youtube2Scratch3",
+					"baseLayerID": 3,
+					"baseLayerMD5": "fc3030f2cef541a79aea8a8717789afe.png",
+					"bitmapResolution": 2,
+					"rotationCenterX": 478,
+					"rotationCenterY": 268
+				}],
+			"currentCostumeIndex": 1,
+			"scratchX": 0,
+			"scratchY": 0,
+			"scale": 1,
+			"direction": 90,
+			"rotationStyle": "normal",
+			"isDraggable": false,
+			"indexInLibrary": 1,
+			"visible": true,
+			"spriteInfo": {
+			}
+		}],
+	"info": {
+		"scriptCount": 2,
+		"swfVersion": "v431a",
+		"videoOn": false,
+		"spriteCount": 1,
+		"flashVersion": "WIN 16,0,0,252"
+	}
+}

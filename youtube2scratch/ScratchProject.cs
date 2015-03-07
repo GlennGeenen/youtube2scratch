@@ -20,17 +20,40 @@ namespace youtube2scratch
 
         public void createScratchJson()
         {
-            //StringBuilder builder = new StringBuilder();
+            
 
-            //foreach (KeyValuePair<int, string> pair in m_directory)
-            //{
-            //    builder.Append("{\"costumeName\": \"youtube2Scratch").Append(pair.Key).Append("\",");
-            //    builder.Append("\"baseLayerID\": ").Append(pair.Key).Append(",");
-            //    builder.Append("\"baseLayerMD5\": \"").Append(pair.Value).Append("\",");
-            //    builder.Append("\"bitmapResolution\": 2,");
-            //    builder.Append("\"rotationCenterX\": 478,");
-            //    builder.Append("\"rotationCenterY\": 268},");
-            //}
+        }
+
+        private string getCostumes()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            foreach (KeyValuePair<int, string> pair in m_directory)
+            {
+                builder.Append("{\"costumeName\": \"youtube2Scratch").Append(pair.Key).Append("\",");
+                builder.Append("\"baseLayerID\": ").Append(pair.Key).Append(",");
+                builder.Append("\"baseLayerMD5\": \"").Append(pair.Value).Append("\",");
+                builder.Append("\"bitmapResolution\": 2,");
+                builder.Append("\"rotationCenterX\": 478,");
+                builder.Append("\"rotationCenterY\": 268},");
+            }
+            builder.Length--;
+
+            return builder.ToString();
+        }
+
+        private string getSounds(string md5, int sampleCount)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append("{\"soundName\": \"youtube2Scratch\"");
+            builder.Append("\"soundID\": 0,");
+            builder.Append("\"md5\": \"").Append(md5).Append(".wv\",");
+            builder.Append("\"sampleCount\":").Append(sampleCount).Append(",");
+            builder.Append("\"rate\": 22050,");
+            builder.Append("\"format\": \"adpcm\"}");
+
+            return builder.ToString();
 
         }
 
